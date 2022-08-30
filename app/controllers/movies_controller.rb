@@ -1,27 +1,26 @@
 class MoviesController < ApplicationController
-  before_action :set_movie, only: %i[ show edit update destroy ]
+  before_action :set_movie, only: %i[show edit update destroy]
 
   # GET /movies or /movies.json
   def index
     @movies = Movie.all
   end
 
-  def search 
-    if params[:search].present?
-      @movies = Movie.where("title ILIKE ?", "%#{params[:title_search]}%")
-    else
-      @movies = []
-    end
+  def search
+    @movies = if params[:search].present?
+                Movie.where("title ILIKE ?", "%#{params[:title_search]}%")
+              else
+                []
+              end
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update("search_results",  partial: "movies/search_results", locals: { movies: @movies })
+        render turbo_stream: turbo_stream.update("search_results", partial: "movies/search_results", locals: { movies: @movies })
       end
     end
   end
 
   # GET /movies/1 or /movies/1.json
-  def show
-  end
+  def show; end
 
   # GET /movies/new
   def new
@@ -29,8 +28,7 @@ class MoviesController < ApplicationController
   end
 
   # GET /movies/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /movies or /movies.json
   def create
@@ -71,13 +69,14 @@ class MoviesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_movie
-      @movie = Movie.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def movie_params
-      params.require(:movie).permit(:title)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_movie
+    @movie = Movie.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def movie_params
+    params.require(:movie).permit(:title)
+  end
 end
