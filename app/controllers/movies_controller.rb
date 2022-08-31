@@ -13,6 +13,7 @@ class MoviesController < ApplicationController
                 []
               end
     respond_to do |format|
+      # format.html { render :index }
       format.turbo_stream do
         render turbo_stream: turbo_stream.update("search_results", partial: "movies/search_results", locals: { movies: @movies })
       end
